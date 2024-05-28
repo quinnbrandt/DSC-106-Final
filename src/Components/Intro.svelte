@@ -15,9 +15,9 @@
   <h2>Objectives</h2>
   <p class = "body-text">
     The goal of this project is to visualize the relationship between EV, LA, and the outcomes that they 
-    produce. We will do this by creating a graphic that takes in two inputs and returns the data collected 
-    from the 2023 season as it regards to the inputs.
-    
+    produce. In the graphic below, use the sliders to pick a desired EV and LA combination to inspect. If there
+    were any recorded instances of that combination during the 2023 season, the box to the side will have a full breakdown
+    of the statistics. Additionally you can see the percentage of BBEs that result in each of the bases by hovering over them.
   </p>
 </section>
 

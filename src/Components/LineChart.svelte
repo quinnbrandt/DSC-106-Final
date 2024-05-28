@@ -2,11 +2,22 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
 
-  let exitVelocity = 50;
-  let launchAngle = 50;
+  let exitVelocity = 67;
+  let launchAngle = 0;
   let hoverText = "";
   let hoverX = 0;
   let hoverY = 0;
+
+  let Hits = 0;
+  let BBE = 0;
+  let AvgDist = 0.0;
+  let avg = 0.0;
+  let wOBA = 0.0;
+  let singles = 0;
+  let doubles = 0;
+  let triples = 0;
+  let homeruns = 0;
+
 
   onMount(() => {
     drawDiamond();
@@ -50,12 +61,30 @@
     const baseSize = fieldWidth / 20;
     const halfBaseSize = baseSize / 2;
 
+    // Add a group element for the hover text box
+    const hoverBox = svg.append("g").style("visibility", "hidden");
+
+    hoverBox
+      .append("rect")
+      .attr("id", "hoverBox")
+      .attr("fill", "white")
+      .attr("stroke", "black")
+      .attr("rx", 5)
+      .attr("ry", 5);
+
+    hoverBox
+      .append("text")
+      .attr("id", "hoverText")
+      .attr("text-anchor", "middle")
+      .attr("dx", -10)
+      .attr("dy", 12);
+
     // Draw bases (white diamonds with black outlines)
     const bases = [
-      { x: fieldWidth / 2, y: fieldHeight / 4, label: "Second Base" }, // Top (second base)
-      { x: 3 * fieldWidth / 4, y: fieldHeight / 2, label: "First Base" }, // Right (first base)
-      { x: fieldWidth / 2, y: 3 * fieldHeight / 4, label: "Home Plate" }, // Bottom (home plate)
-      { x: fieldWidth / 4, y: fieldHeight / 2, label: "Third Base" }, // Left (third base)
+      { x: fieldWidth / 2, y: fieldHeight / 4, label: "Double %: " },
+      { x: 3 * fieldWidth / 4, y: fieldHeight / 2, label: "Single %: " },
+      { x: fieldWidth / 2, y: 3 * fieldHeight / 4, label: "Home Run %: " },
+      { x: fieldWidth / 4, y: fieldHeight / 2, label: "Triple %: " },
     ];
 
     bases.forEach((base) => {
@@ -69,12 +98,26 @@
         .attr("stroke", "black")
         .attr("transform", `rotate(45, ${base.x}, ${base.y})`)
         .on("mouseover", (event) => {
-          hoverText = base.label;
-          hoverX = base.x;
-          hoverY = base.y - 20; // Adjust position above the base
+          const textWidth = base.label.length * 10; // Approximate text width
+          const textHeight = 30; // Box height
+
+          hoverBox
+            .attr("transform", `translate(${base.x},${base.y - halfBaseSize - textHeight - 10})`)
+            .style("visibility", "visible");
+
+          hoverBox.select("rect")
+            .attr("width", textWidth + 20)
+            .attr("height", textHeight)
+            .attr("x", -(textWidth / 2) - 10)
+            .attr("y", -textHeight / 2);
+
+          hoverBox.select("text")
+            .attr("x", 0)
+            .attr("y", -textHeight / 4)
+            .text(base.label);
         })
         .on("mouseout", () => {
-          hoverText = "";
+          hoverBox.style("visibility", "hidden");
         });
     });
   }
@@ -82,21 +125,49 @@
 
 <svg id="diamond"></svg>
 
-<div class="slider-container">
-  <label for="exitVelocity">Exit Velocity</label>
-  <input type="range" id="exitVelocity" min="0" max="100" bind:value={exitVelocity}>
-  <span>{exitVelocity}</span>
-  
-  <label for="launchAngle">Launch Angle</label>
-  <input type="range" id="launchAngle" min="0" max="100" bind:value={launchAngle}>
-  <span>{launchAngle}</span>
+<div class="container">
+  <div class="slider-container">
+    <label for="exitVelocity">Exit Velocity</label>
+    <input type="range" id="exitVelocity" min="12" max="122" bind:value={exitVelocity}>
+    <span>{exitVelocity}</span>
+    
+    <label for="launchAngle">Launch Angle</label>
+    <input type="range" id="launchAngle" min="-89" max="89" bind:value={launchAngle}>
+    <span>{launchAngle}</span>
+  </div>
+  <div class="text-box">
+    <h>Stats</h>
+    <p>Hits: {Hits}</p> 
+    <p>BBE: {BBE}</p>
+    <p>Avg. Distance (ft): {AvgDist}</p>
+    <p>Batting Avg.: {avg}</p>
+    <p>wOBA: {wOBA}</p>
+    <p>1B: {singles}</p>
+    <p>2B: {doubles}</p>
+    <p>3B: {triples}</p>
+    <p>HR: {homeruns}</p>
+  </div>
 </div>
 
-{#if hoverText}
-  <div class="hover-box" style="left: {hoverX}px; top: {hoverY}px;">{hoverText}</div>
-{/if}
+
 
 <style>
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 50px;
+  }
+
+    .text-box {
+    margin-left: 20px;
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
   svg {
     display: block;
     margin: auto;
@@ -126,11 +197,15 @@
     position: absolute;
     background-color: white;
     border: 1px solid black;
-    padding: 5px;
+    padding: 20px;
     border-radius: 3px;
     pointer-events: none;
+    margin-top: 20px;
   }
 </style>
+
+
+
 
 
 

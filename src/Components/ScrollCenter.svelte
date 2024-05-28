@@ -48,37 +48,6 @@
   $: if (typeof value !== "undefined") target2event[value]();
 </script>
 
-<h2 class="body-header">Center Scrolly Example</h2>
-<p class="body-text">
-  Here's an example of a typical side-scroller. It's responsive, and will fold
-  to an overlap scroll if the screen gets small enough:
-</p>
-<section>
-  <!-- scroll container -->
-  <div class="section-container">
-    <div class="steps-container">
-      <Scrolly bind:value>
-        {#each steps as text, i}
-          <div class="step" class:active={value === i}>
-            <div class="step-content">{@html text}</div>
-          </div>
-        {/each}
-        <div class="spacer" />
-      </Scrolly>
-    </div>
-    <div class="charts-container">
-      <div class="chart-one">
-        <svg id="chart3" />
-      </div>
-      <div class="chart-two">
-        <svg id="chart4" />
-      </div>
-    </div>
-  </div>
-  <!-- end scroll -->
-  <br /><br />
-  <p class="body-text">And that's the end of our scrolly.</p>
-</section>
 
 <style>
   #chart3,
